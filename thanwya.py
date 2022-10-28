@@ -7,7 +7,7 @@ seating_nos = [870813,870888,870652,870000,865231,868686,
                 868682,481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
-# student_names = []       
+# student_names = []       # For privacy!
 school_names = []
 governorates = []
 citys = []
@@ -58,7 +58,11 @@ with sync_playwright() as p:
             # status = new_selector(soup, '.animate__animated.animate__fadeInDown')
             # status = soup.select('.animate__animated.animate__fadeInDown')
             student_status = status[0].text
-            assessment.append(student_status)
+            if student_status == 'ناجـح':
+                translated_status = 'Pass'
+            else:
+                translated_status = 'Fail'
+            assessment.append(translated_status)
 
             # > student data
             student_details = new_selector('.p-data > table > tbody > tr td')
