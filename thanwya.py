@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # > valid seating numbers / manual inserted!
-seating_nos = [870813,870888,870652,870000,865231,868686,
+seating_nos = [870813,111111,870888,870652,870000,865231,868686,
                 868682,481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
@@ -31,8 +31,14 @@ with sync_playwright() as p:
         page.fill('input#SeatingNo',str(seating_num))
         page.click('button[type=submit]')
 
-        ## locator = page.locator('div.text-center')
+        Ideal = page.is_hidden('div.text-center')
+        # print(Ideal)
         ## if expect(locator).to_be_hidden() is None:
+
+        if Ideal == False:
+            break
+        # # time.sleep(0.2)  
+
 
         # > read full html page
         html = page.inner_html('html')
@@ -141,7 +147,7 @@ natega_df = pd.DataFrame({'desk_no': desk_nums,
 # print(natega_df.info())
 print(natega_df)
 
-natega_df.to_csv('natega.csv',index=False)
+# natega_df.to_csv('natega.csv',index=False)
 
 
  
