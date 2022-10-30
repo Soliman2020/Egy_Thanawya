@@ -2,8 +2,9 @@ from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# > seating numbers range!
-seating_nos = [*range(870000,870030,1)]
+# > seating numbers MIX
+seating_nos = [*range(870000,870041,1),865231,868686,868682,
+                481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
 # student_names = []       # PLZ Keep hidden for privacy!
@@ -121,8 +122,6 @@ natega_df = pd.DataFrame({'desk_no': desk_nums,
                         'total_scores':total_scores,
                         'status':assessment
                         })
-
-# print(natega_df.info())
 
 print(natega_df)
 
