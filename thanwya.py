@@ -1,13 +1,13 @@
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# > valid seating numbers / manual inserted!
-seating_nos = [870813,870888,870652,870000,865231,868686,
-                868682,481548,893538,387692,173148,234727,546254]
+# > seating numbers MIX
+seating_nos = [*range(870000,870041,1),865231,868686,868682,
+                481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
-# student_names = []       # For privacy!
+# student_names = []       # PLZ Keep hidden for privacy!
 school_names = []
 governorates = []
 citys = []
@@ -28,11 +28,19 @@ with sync_playwright() as p:
     page.goto('https://g12.emis.gov.eg')
 
     for seating_num in seating_nos:
+
+        page.is_visible('div.allcom')
         page.fill('input#SeatingNo',str(seating_num))
         page.click('button[type=submit]')
 
-        ## locator = page.locator('div.text-center')
-        ## if expect(locator).to_be_hidden() is None:
+        Ideal = page.is_hidden('div.text-center')
+        # print(Ideal)
+
+        # > permit only valid seating numbers (no page error promot)
+        if Ideal == False:
+            continue
+        
+        page.is_visible('div.col-lg-12.justify-content-center.section-title')
 
         # > read full html page
         html = page.inner_html('html')
@@ -40,87 +48,64 @@ with sync_playwright() as p:
         # > BeautifulSoup process
         soup = BeautifulSoup(html,'html.parser')
 
-        try:
+        # > student status (passed/failed)
+        status = soup.select('.animate__animated.animate__fadeInDown')
+      
+        student_status = status[0].text
+        if student_status == 'ناجـح':
+            translated_status = 'Pass'
+        else:
+            translated_status = 'Fail'
+        assessment.append(translated_status)
 
-            def new_selector(selector):
-                return soup.select(selector)
+        # > student data
+        student_details = soup.select('.p-data > table > tbody > tr td')
 
-            # def new_selector(selector):
-            #     try:
-            #         return soup.select(selector)
-            #     except IndexError as err:
-            #         # print(err)
-            #         # return None
-            #         continue
+        desk_no = student_details[0].text
+        desk_nums.append(desk_no)
 
-            # > student status (passed/failed)
-            status = new_selector('.animate__animated.animate__fadeInDown')
-            # status = new_selector(soup, '.animate__animated.animate__fadeInDown')
-            # status = soup.select('.animate__animated.animate__fadeInDown')
-            student_status = status[0].text
-            if student_status == 'ناجـح':
-                translated_status = 'Pass'
-            else:
-                translated_status = 'Fail'
-            assessment.append(translated_status)
+        # > hiding student name is better than showing
+        # student_name = student_details[1].text
+        # student_names.append(student_name)
 
-            # > student data
-            student_details = new_selector('.p-data > table > tbody > tr td')
-            # student_details = new_selector(soup, '.p-data > table > tbody > tr td')
-            # student_details = soup.select('.p-data > table > tbody > tr td')
+        school_name = student_details[2].text
+        school_names.append(school_name)
 
-            desk_no = student_details[0].text
-            desk_nums.append(desk_no)
+        governorate = student_details[3].text
+        governorates.append(governorate)
 
-            # > hiding student name is better than showing
-            # student_name = student_details[1].text
-            # student_names.append(student_name)
+        city = student_details[4].text
+        citys.append(city)
 
-            school_name = student_details[2].text
-            school_names.append(school_name)
+        # > student scores
+        scores = soup.select('.p-details > table > tbody > tr > th:nth-of-type(2)')
 
-            governorate = student_details[3].text
-            governorates.append(governorate)
+        Arabic = float(scores[0].text)
+        Arabic_scores.append(Arabic)
 
-            city = student_details[4].text
-            citys.append(city)
+        F_1 = float(scores[1].text)
+        F_1_scores.append(F_1)
 
-            # > student scores
-            scores = new_selector('.p-details > table > tbody > tr > th:nth-of-type(2)')
-            # scores = new_selector(soup, '.p-details > table > tbody > tr > th:nth-of-type(2)')
-            # scores = soup.select('.p-details > table > tbody > tr > th:nth-of-type(2)')
+        F_2 = float(scores[2].text)
+        F_2_scores.append(F_2)
 
-            Arabic = int(scores[0].text)
-            Arabic_scores.append(Arabic)
+        biology = float(scores[3].text)
+        biology_scores.append(biology)
 
-            F_1 = int(scores[1].text)
-            F_1_scores.append(F_1)
+        geology = float(scores[4].text)
+        geology_scores.append(geology)
 
-            F_2 = int(scores[2].text)
-            F_2_scores.append(F_2)
+        chemistry = float(scores[5].text)
+        chemistry_scores.append(chemistry)
 
-            biology = int(scores[3].text)
-            biology_scores.append(biology)
+        physics = float(scores[6].text)
+        physics_scores.append(physics)
 
-            geology = int(scores[4].text)
-            geology_scores.append(geology)
+        total = float(scores[7].text)
+        total_scores.append(total)
 
-            chemistry = int(scores[5].text)
-            chemistry_scores.append(chemistry)
-
-            physics = int(scores[6].text)
-            physics_scores.append(physics)
-
-            total = int(scores[7].text)
-            total_scores.append(total)
-
-            # > To retart query for new desk number
-            page.go_back()
-
-            ## else:    
-            ##     break
-        except (ValueError, IndexError):
-            continue
+        # > To retart query for new desk number
+        page.go_back()
 
 natega_df = pd.DataFrame({'desk_no': desk_nums,
                         # 'student_name':student_names,
@@ -138,10 +123,6 @@ natega_df = pd.DataFrame({'desk_no': desk_nums,
                         'status':assessment
                         })
 
-# print(natega_df.info())
 print(natega_df)
 
 natega_df.to_csv('natega.csv',index=False)
-
-
- 
