@@ -4,17 +4,28 @@ import pandas as pd
 import time
 
 logo = """
-  ____        _ _                       ____   ___ ____   ___  
- / ___|  ___ | (_)_ __ ___   __ _ _ __ |___ \ / _ \___ \ / _ \ 
- \___ \ / _ \| | | '_ ` _ \ / _` | '_ \  __) | | | |__) | | | |
-  ___) | (_) | | | | | | | | (_| | | | |/ __/| |_| / __/| |_| |
- |____/ \___/|_|_|_| |_| |_|\__,_|_| |_|_____|\___/_____|\___/ 
+  ^    ^    ^    ^    ^    ^    ^    ^    ^       ^    ^    ^    ^    ^    ^    ^  
+ /T\  /h\  /a\  /n\  /a\  /w\  /e\  /y\  /a\     /R\  /e\  /s\  /u\  /l\  /t\  /s\ 
+<___><___><___><___><___><___><___><___><___>   <___><___><___><___><___><___><___>
+\n 
+Made by Soliman2020
 """
 
 print(logo)
 
-start = int(input('Enter start seating num _range from 100000 to 999999_:  '))
-last =start + 61
+while True:
+   try:
+       start = int(input('Enter a start seating num in range 100000-999999 >>> '))
+   except ValueError: # just catch the exceptions you know!
+       print ("That's not a number!")
+   else:
+       if 100000 <= start < 999999: # this is faster
+           last = start + 61
+           print('processing, please wait...')
+           break
+       else:
+           print ('Out of range. Try again')
+
 
 # > seating numbers MIX
 seating_nos = [*range(start,last,1)]
