@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # > seating numbers MIX
-seating_nos = [*range(870000,870201,1),865231,868686,868682,
+seating_nos = [*range(870000,870051,1),865231,868686,868682,
                 481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
@@ -19,6 +19,10 @@ biology_scores = []
 geology_scores = []
 chemistry_scores = []
 physics_scores = []
+history_scores = []
+geography_scores = []
+philosophy_scores = []
+psychology_scores = []
 total_scores = []
 
 with sync_playwright() as p:
@@ -77,6 +81,14 @@ with sync_playwright() as p:
         city = student_details[4].text
         citys.append(city)
 
+        # > student different materials
+        material = soup.select('.p-details > table > tbody > tr > th:nth-of-type(1)')
+
+        mat4 = material[3].text
+        mat5 = material[4].text
+        mat6 = material[5].text
+        mat7 = material[6].text
+
         # > student scores
         scores = soup.select('.p-details > table > tbody > tr > th:nth-of-type(2)')
 
@@ -89,17 +101,37 @@ with sync_playwright() as p:
         F_2 = float(scores[2].text)
         F_2_scores.append(F_2)
 
-        biology = float(scores[3].text)
-        biology_scores.append(biology)
+        mat4_score = float(scores[3].text)
+        if mat4 == 'الأحياء':
+            biology_scores.append(mat4_score)
+            history_scores.append('NA')
+        if mat4 == 'التاريخ':
+            history_scores.append(mat4_score)       
+            biology_scores.append('NA')
 
-        geology = float(scores[4].text)
-        geology_scores.append(geology)
+        mat5_score = float(scores[4].text)
+        if mat5 == 'الجيولوجيا وعلوم البيئة':
+            geology_scores.append(mat5_score)
+            geography_scores.append('NA')
+        if mat5 == 'الجغرافيا':
+            geography_scores.append(mat5_score)
+            geology_scores.append('NA')
 
-        chemistry = float(scores[5].text)
-        chemistry_scores.append(chemistry)
+        mat6_score = float(scores[5].text)
+        if mat6 == 'الكيمياء':
+            chemistry_scores.append(mat6_score)
+            philosophy_scores.append('NA')
+        if mat6 == 'الفلسفة والمنطق':
+            philosophy_scores.append(mat6_score)
+            chemistry_scores.append('NA')
 
-        physics = float(scores[6].text)
-        physics_scores.append(physics)
+        mat7_score = float(scores[6].text)
+        if mat7 == 'الفيزياء':
+            physics_scores.append(mat7_score)
+            psychology_scores.append('NA')
+        if mat7 == 'علم النفس والإجتماع':
+            psychology_scores.append(mat7_score)
+            physics_scores.append('NA')
 
         total = float(scores[7].text)
         total_scores.append(total)
@@ -119,6 +151,10 @@ natega_df = pd.DataFrame({'desk_no': desk_nums,
                         'geology':geology_scores,
                         'chemistry':chemistry_scores,
                         'physics':physics_scores,
+                        'history':history_scores,
+                        'geography':geography_scores,
+                        'philosophy':philosophy_scores,
+                        'psychology':psychology_scores,
                         'total_scores':total_scores,
                         'status':assessment
                         })
