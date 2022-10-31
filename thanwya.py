@@ -12,7 +12,7 @@ while True:
        print ("That's not a number!")
    else:
        if 100000 <= start < 999999:
-           size = int(input('Please enter how many iterations you want to get >>> ')) 
+           size = int(input('Please enter how many iterations you want to apply >>> ')) 
            last = start + size + 1
            print('processing, please wait...')
            break
