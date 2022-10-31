@@ -3,14 +3,24 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 
+logo = """
+  ____        _ _                       ____   ___ ____   ___  
+ / ___|  ___ | (_)_ __ ___   __ _ _ __ |___ \ / _ \___ \ / _ \ 
+ \___ \ / _ \| | | '_ ` _ \ / _` | '_ \  __) | | | |__) | | | |
+  ___) | (_) | | | | | | | | (_| | | | |/ __/| |_| / __/| |_| |
+ |____/ \___/|_|_|_| |_| |_|\__,_|_| |_|_____|\___/_____|\___/ 
+"""
+
+print(logo)
+
 start = int(input('Enter start seating num _range from 100000 to 999999_:  '))
-last =start + 81
+last =start + 61
 
 # > seating numbers MIX
 seating_nos = [*range(start,last,1)]
 
-# seating_nos = [*range(870000,870101,1),865231,868686,868682,
-#                 481548,893538,387692,173148,234727,546254]
+# seating_nos = [*range(870000,870101,1)]
+# seating_nos = [865231,868686,868682,481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
 # student_names = []       # PLZ Keep hidden for privacy!
@@ -67,6 +77,7 @@ with sync_playwright() as p:
         else:
             translated_status = 'Fail'
         assessment.append(translated_status)
+        # assessment.append(student_status)
 
         # > student data
         student_details = soup.select('.p-data > table > tbody > tr td')
@@ -167,4 +178,6 @@ natega_df = pd.DataFrame({'desk_no': desk_nums,
 
 print(natega_df)
 
-natega_df.to_csv('natega.csv',index=False)
+natega_df.to_csv(f'natega_valid_range_{start}_to_{start+60}.csv',index=False)
+
+print('Results are ready, check the output CSV file.')
