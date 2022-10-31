@@ -3,15 +3,6 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 
-logo = """
-  ^    ^    ^    ^    ^    ^    ^    ^    ^       ^    ^    ^    ^    ^    ^    ^  
- /T\  /h\  /a\  /n\  /a\  /w\  /e\  /y\  /a\     /R\  /e\  /s\  /u\  /l\  /t\  /s\ 
-<___><___><___><___><___><___><___><___><___>   <___><___><___><___><___><___><___>
-\n 
-Made by Soliman2020
-"""
-
-print(logo)
 
 while True:
    try:
@@ -20,7 +11,7 @@ while True:
        print ("That's not a number!")
    else:
        if 100000 <= start < 999999: # this is faster
-           last = start + 61
+           last = start + 10
            print('processing, please wait...')
            break
        else:
@@ -51,27 +42,29 @@ geography_scores = []
 philosophy_scores = []
 psychology_scores = []
 total_scores = []
+percentages = []
+
 def core():
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
         # > the target website
-        page.goto('https://g12.emis.gov.eg')
+        page.goto('https://natega.cairo24.com/')
 
         for seating_num in seating_nos:
-            page.is_visible('div.allcom')
+            page.is_visible('div.all')
             time.sleep(1)
-            page.fill('input#SeatingNo',str(seating_num))
+            page.fill('input#seating_no',str(seating_num))
             page.click('button[type=submit]')
 
-            Ideal = page.is_hidden('div.text-center')
-            # print(Ideal)
+            Ideal = page.is_hidden('center.field-validation-valid:nth-child(3)')
+            print(Ideal)
 
             # > permit only valid seating numbers (no page error promot)
             if Ideal == False:
                 continue
             
-            page.is_visible('div.col-lg-12.justify-content-center.section-title')
+            # page.is_visible('div.col-lg-12.justify-content-center.section-title')
 
             # > read full html page
             html = page.inner_html('html')
@@ -79,55 +72,57 @@ def core():
             # > BeautifulSoup process
             soup = BeautifulSoup(html,'html.parser')
 
-            # > student status (passed/failed)
-            status = soup.select('.animate__animated.animate__fadeInDown')
-        
-            student_status = status[0].text
-            if student_status == 'ناجـح':
-                translated_status = 'Pass'
-            else:
-                translated_status = 'Fail'
-            assessment.append(translated_status)
+            # > student status
+            # status = soup.select('div.RightSide')
+            percentage_loc = soup.select('li.col:nth-child(3)>h1')
+            percentage_value = percentage_loc[0].text
+            percentages.append(percentage_value)
+            # student_status = status[0].text
+            # if student_status == 'ناجـح':
+            #     translated_status = 'Pass'
+            # else:
+            #     translated_status = 'Fail'
+            # assessment.append(translated_status)
             # assessment.append(student_status)
 
             # > student data
-            student_details = soup.select('.p-data > table > tbody > tr td')
+            desk_no = soup.select('li.col:nth-child(1) > h1')[0].text
 
-            desk_no = student_details[0].text
+            # desk_no = student_details[0].text
             desk_nums.append(desk_no)
 
             # > hiding student name is better than showing
             # student_name = student_details[1].text
             # student_names.append(student_name)
 
-            school_name = student_details[2].text
-            school_names.append(school_name)
+            # school_name = student_details[2].text
+            # school_names.append(school_name)
 
-            governorate = student_details[3].text
-            governorates.append(governorate)
+            # governorate = student_details[3].text
+            # governorates.append(governorate)
 
-            city = student_details[4].text
-            citys.append(city)
+            # city = student_details[4].text
+            # citys.append(city)
 
-            # > student different materials
-            material = soup.select('.p-details > table > tbody > tr > th:nth-of-type(1)')
+            # # > student different materials
+            # material = soup.select('.p-details > table > tbody > tr > th:nth-of-type(1)')
 
-            mat4 = material[3].text
-            mat5 = material[4].text
-            mat6 = material[5].text
-            mat7 = material[6].text
+            # mat4 = material[3].text
+            # mat5 = material[4].text
+            # mat6 = material[5].text
+            # mat7 = material[6].text
 
             # > student scores
-            scores = soup.select('.p-details > table > tbody > tr > th:nth-of-type(2)')
+            # scores = soup.select('.p-details > table > tbody > tr > th:nth-of-type(2)')
 
-            Arabic = (scores[0].text)
-            Arabic_scores.append(Arabic)
+            # Arabic = (scores[0].text)
+            # Arabic_scores.append(Arabic)
 
-            F_1 = (scores[1].text)
-            F_1_scores.append(F_1)
+            # F_1 = (scores[1].text)
+            # F_1_scores.append(F_1)
 
-            F_2 = (scores[2].text)
-            F_2_scores.append(F_2)
+            # F_2 = (scores[2].text)
+            # F_2_scores.append(F_2)
 
             # mat4_score = (scores[3].text)
             # if mat4 == 'الأحياء':
@@ -161,20 +156,21 @@ def core():
             #     psychology_scores.append(mat7_score)
             #     physics_scores.append('NA')
 
-            total = (scores[7].text)
-            total_scores.append(total)
+            # total = (scores[7].text)
+            # total_scores.append(total)
 
             # > To retart query for new desk number
             page.go_back()
 
     natega_df = pd.DataFrame({'desk_no': desk_nums,
+                            'percentage':percentages,
                             # 'student_name':student_names,
-                            'school_name': school_names,
-                            'directorate': governorates,
-                            'neighborhood': citys,
-                            'arabic':Arabic_scores, 
-                            'first_forign_lang':F_1_scores, 
-                            'second_forign_lang':F_2_scores,
+                            # 'school_name': school_names,
+                            # 'directorate': governorates,
+                            # 'neighborhood': citys,
+                            # 'arabic':Arabic_scores, 
+                            # 'first_forign_lang':F_1_scores, 
+                            # 'second_forign_lang':F_2_scores,
                             # 'biology':biology_scores,
                             # 'geology':geology_scores,
                             # 'chemistry':chemistry_scores,
@@ -183,8 +179,8 @@ def core():
                             # 'geography':geography_scores,
                             # 'philosophy':philosophy_scores,
                             # 'psychology':psychology_scores,
-                            'total_scores':total_scores,
-                            'status':assessment
+                            # 'total_scores':total_scores,
+                            # 'status':assessment
                             })
 
     print(natega_df)
