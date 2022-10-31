@@ -99,24 +99,66 @@ def core():
             division = soup.select('.full-result > ul:nth-child(1) > li:nth-child(7) > span:nth-child(2)')[0].text
             divisions.append(division)
 
+            page.is_visible('.RightSide2')
+
+            arabic = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(1) > span:nth-child(2)')[0].text
+            Arabic_scores.append(arabic)
+
+            foreign_1 = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)')[0].text
+            F_1_scores.append(foreign_1)
+
+            foreign_2 = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(3) > span:nth-child(2)')[0].text
+            F_2_scores.append(foreign_2)
+
+            pm = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(4) > span:nth-child(2)')[0].text
+            pure_mathematics.append(pm)
+
+            history = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(5) > span:nth-child(2)')[0].text
+            history_scores.append(history)
+
+            geo = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(6) > span:nth-child(2)')[0].text
+            geography_scores.append(geo)
+
+            philo = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(7) > span:nth-child(2)')[0].text
+            philosophy_scores.append(philo)
+
+            psych = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(8) > span:nth-child(2)')[0].text
+            psychology_scores.append(psych)
+
+            chemistry = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(9) > span:nth-child(2)')[0].text
+            chemistry_scores.append(chemistry)
+
+            biology = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(10) > span:nth-child(2)')[0].text
+            biology_scores.append(biology)
+
+            geology = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(11) > span:nth-child(2)')[0].text
+            geology_scores.append(geology)
+
+            am = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(12) > span:nth-child(2)')[0].text
+            applied_math.append(am)
+
+            physics = soup.select('div.result-details:nth-child(2) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(13) > span:nth-child(2)')[0].text
+            physics_scores.append(physics)
+
             # > To retart query for new desk number
             page.go_back(timeout=0)
 
     natega_df = pd.DataFrame({'desk_no': desk_nums,
                             'school_name': school_names,
                             'directorate': directorates,
-                            # 'neighborhood': citys,
-                            # 'arabic':Arabic_scores, 
-                            # 'first_forign_lang':F_1_scores, 
-                            # 'second_forign_lang':F_2_scores,
-                            # 'biology':biology_scores,
-                            # 'geology':geology_scores,
-                            # 'chemistry':chemistry_scores,
-                            # 'physics':physics_scores,
-                            # 'history':history_scores,
-                            # 'geography':geography_scores,
-                            # 'philosophy':philosophy_scores,
-                            # 'psychology':psychology_scores,
+                            'arabic':Arabic_scores, 
+                            'first_foreign_lang':F_1_scores, 
+                            'second_foreign_lang':F_2_scores,
+                            'pure_mathematics':pure_mathematics,
+                            'history':history_scores,
+                            'geology':geology_scores,
+                            'philosophy':philosophy_scores,
+                            'psychology':psychology_scores,
+                            'chemistry':chemistry_scores,
+                            'biology':biology_scores,
+                            'geography':geography_scores,
+                            'applied_math':applied_math,
+                            'physics':physics_scores,
                             'division':divisions,
                             'total_scores':total_scores,
                             'percentage':percentages,
