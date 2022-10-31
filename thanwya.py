@@ -12,7 +12,8 @@ while True:
        print ("That's not a number!")
    else:
        if 100000 <= start < 999999:
-           last = start + 11
+           size = int(input('Please enter how many iterations you want to get >>> ')) 
+           last = start + size + 1
            print('processing, please wait...')
            break
        else:
@@ -29,7 +30,7 @@ desk_nums = []
 percentages = []
 # student_names = []       # PLZ Keep hidden for privacy!
 school_names = []
-governorates = []
+directorates = []
 citys = []
 assessment = []
 divisions = []
@@ -89,13 +90,21 @@ def core():
             school_name = soup.select('.full-result > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)')[0].text
             school_names.append(school_name)
 
+            directorate = soup.select('.full-result > ul:nth-child(1) > li:nth-child(3) > span:nth-child(2)')[0].text
+            directorates.append(directorate)
+
+            status = soup.select('.full-result > ul:nth-child(1) > li:nth-child(5) > span:nth-child(2)')[0].text.strip()
+            assessment.append(status)
+
+            division = soup.select('.full-result > ul:nth-child(1) > li:nth-child(7) > span:nth-child(2)')[0].text
+            divisions.append(division)
+
             # > To retart query for new desk number
-            page.go_back()
+            page.go_back(timeout=0)
 
     natega_df = pd.DataFrame({'desk_no': desk_nums,
-                            'percentage':percentages,
                             'school_name': school_names,
-                            # 'directorate': governorates,
+                            'directorate': directorates,
                             # 'neighborhood': citys,
                             # 'arabic':Arabic_scores, 
                             # 'first_forign_lang':F_1_scores, 
@@ -108,13 +117,15 @@ def core():
                             # 'geography':geography_scores,
                             # 'philosophy':philosophy_scores,
                             # 'psychology':psychology_scores,
+                            'division':divisions,
                             'total_scores':total_scores,
-                            # 'status':assessment
+                            'percentage':percentages,
+                            'status':assessment
                             })
 
     print(natega_df)
 
-    natega_df.to_csv(f'natega_valid_range_{start}_to_{start+10}.csv',index=False)
+    natega_df.to_csv(f'natega_valid_range_{start}_to_{last-1}.csv',index=False)
 
     print('Results are ready, check the output CSV file.')
 
