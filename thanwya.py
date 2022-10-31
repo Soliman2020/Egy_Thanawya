@@ -76,22 +76,25 @@ def core():
             soup = BeautifulSoup(html,'html.parser')
 
             # > student status
-            desk_no = soup.select('li.col:nth-child(1) > h1')[0].text
+            desk_no = soup.select('li.col:nth-child(1)>h1')[0].text
             desk_nums.append(desk_no)
 
-            percentage_loc = soup.select('li.col:nth-child(3)>h1')
-            percentage_value = percentage_loc[0].text
-            percentages.append(percentage_value)
+            total = soup.select('li.col:nth-child(2)>h1')[0].text
+            total_scores.append(total)            
 
-            # school_name = soup.select('.full-result > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)')[0].text
-            # school_names.append(school_name)
+            percentage = soup.select('li.col:nth-child(3)>h1')[0].text
+            # percentage_value = percentage_loc[0].text
+            percentages.append(percentage)
+
+            school_name = soup.select('.full-result > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)')[0].text
+            school_names.append(school_name)
 
             # > To retart query for new desk number
             page.go_back()
 
     natega_df = pd.DataFrame({'desk_no': desk_nums,
                             'percentage':percentages,
-                            # 'school_name': school_names
+                            'school_name': school_names,
                             # 'directorate': governorates,
                             # 'neighborhood': citys,
                             # 'arabic':Arabic_scores, 
@@ -105,7 +108,7 @@ def core():
                             # 'geography':geography_scores,
                             # 'philosophy':philosophy_scores,
                             # 'psychology':psychology_scores,
-                            # 'total_scores':total_scores,
+                            'total_scores':total_scores,
                             # 'status':assessment
                             })
 
