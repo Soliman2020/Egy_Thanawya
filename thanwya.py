@@ -1,10 +1,16 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import pandas as pd
+import time
+
+start = int(input('Enter start seating num _range from 100000 to 999999_:  '))
+last =start + 81
 
 # > seating numbers MIX
-seating_nos = [*range(870000,870051,1),865231,868686,868682,
-                481548,893538,387692,173148,234727,546254]
+seating_nos = [*range(start,last,1)]
+
+# seating_nos = [*range(870000,870101,1),865231,868686,868682,
+#                 481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
 # student_names = []       # PLZ Keep hidden for privacy!
@@ -32,8 +38,8 @@ with sync_playwright() as p:
     page.goto('https://g12.emis.gov.eg')
 
     for seating_num in seating_nos:
-
         page.is_visible('div.allcom')
+        time.sleep(1)
         page.fill('input#SeatingNo',str(seating_num))
         page.click('button[type=submit]')
 
