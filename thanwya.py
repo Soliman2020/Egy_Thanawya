@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # > seating numbers MIX
-seating_nos = [*range(870000,870041,1),865231,868686,868682,
+seating_nos = [*range(870000,870201,1),865231,868686,868682,
                 481548,893538,387692,173148,234727,546254]
 
 desk_nums = []
@@ -110,10 +110,10 @@ with sync_playwright() as p:
 natega_df = pd.DataFrame({'desk_no': desk_nums,
                         # 'student_name':student_names,
                         'school_name': school_names,
-                        'governorate': governorates,
-                        'city': citys,
-                        'Arabic_lang':Arabic_scores, 
-                        'First_forign_lang':F_1_scores, 
+                        'directorate': governorates,
+                        'neighborhood': citys,
+                        'arabic':Arabic_scores, 
+                        'first_forign_lang':F_1_scores, 
                         'second_forign_lang':F_2_scores,
                         'biology':biology_scores,
                         'geology':geology_scores,
