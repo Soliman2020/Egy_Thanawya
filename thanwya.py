@@ -3,6 +3,15 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 
+logo = """
+  ^    ^    ^    ^    ^    ^    ^    ^    ^       ^    ^    ^    ^    ^    ^    ^  
+ /T\  /h\  /a\  /n\  /a\  /w\  /e\  /y\  /a\     /R\  /e\  /s\  /u\  /l\  /t\  /s\ 
+<___><___><___><___><___><___><___><___><___>   <___><___><___><___><___><___><___>
+\n 
+Made by Soliman2020
+"""
+
+print(logo)
 
 while True:
    try:
