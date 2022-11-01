@@ -12,7 +12,7 @@ while True:
    else:
        if 100000 <= start < 999999:
            size = int(input('Please enter how many iterations you want to apply >>> ')) 
-           last = start + size + 1
+           last = start + size
            print('processing, please wait...')
            break
        else:
@@ -50,6 +50,8 @@ total_scores = []
 
 
 def core():
+    Total_Wrong = 0
+    Total_Right = 0
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
@@ -64,9 +66,13 @@ def core():
 
             Ideal = page.is_hidden('center.field-validation-valid:nth-child(3)')
             print(Ideal)
-
+            if Ideal == True:
+                Total_Right=Total_Right+1
+                print(f'#Right={Total_Right} \n#Wrong={Total_Wrong}\n#Total={Total_Wrong+Total_Right}\n')
             # > permit only valid seating numbers (no page error promot)
             if Ideal == False:
+                Total_Wrong=Total_Wrong+1
+                print(f'#Right={Total_Right} \n#Wrong={Total_Wrong}\n#Total={Total_Wrong+Total_Right}\n')
                 continue
             
             # > read full html page
