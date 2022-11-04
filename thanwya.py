@@ -1,7 +1,7 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import pandas as pd
-import time
+# import time
 
 logo = """
   ^    ^    ^    ^    ^    ^    ^    ^    ^       ^    ^    ^    ^    ^    ^    ^  
@@ -69,7 +69,7 @@ def core():
 
         for seating_num in seating_nos:
             page.is_visible('div.all')
-            time.sleep(1)
+            # time.sleep(1)
             page.fill('input#seating_no',str(seating_num))
             page.click('input#submit')
 
@@ -77,11 +77,11 @@ def core():
             print(Ideal)
             if Ideal == True:
                 Total_Right=Total_Right+1
-                print(f'#Right={Total_Right} \n#Wrong={Total_Wrong}\n#Total={Total_Wrong+Total_Right}\n')
+                print(f'#Right_seating_number = {Total_Right} \n#Wrong_seating_number = {Total_Wrong}\n#Total = (( {Total_Wrong+Total_Right} ))\n')
             # > permit only valid seating numbers (no page error promot)
             if Ideal == False:
                 Total_Wrong=Total_Wrong+1
-                print(f'#Right={Total_Right} \n#Wrong={Total_Wrong}\n#Total={Total_Wrong+Total_Right}\n')
+                print(f'#Right_seating_number = {Total_Right} \n#Wrong_seating_number = {Total_Wrong}\n#Total = (( {Total_Wrong+Total_Right} ))\n')
                 continue
             
             # > read full html page
@@ -179,14 +179,15 @@ def core():
                             'status':assessment
                             })
 
-    print(natega_df)
+    print('The top rows of your results:\n',natega_df.head())
 
     natega_df.to_csv(f'natega_valid_range_{start}_to_{last-1}.csv',index=False)
 
-    print('Results are ready, check the output CSV file.')
+    print('\nResults are ready, check the output CSV file.\n')
 
 def main():
     core()
+    k=input("Press 'Enter' to close this windows...\n") 
 
 if __name__ == '__main__':
     main()
